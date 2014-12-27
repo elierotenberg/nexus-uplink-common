@@ -80,6 +80,12 @@ class Message {
         patch.should.be.a.String;
         this._interpretation = { path, patch };
       }
+      else if(_type === MESSAGE_TYPES.DELETE) {
+        _payload.should.be.an.Object;
+        path = _payload.p;
+        path.should.be.a.String;
+        this._interpretation = { path };
+      }
       else {
         throw new Error(`Unknown message type: ${_type}`);
       }
@@ -119,6 +125,10 @@ class Message {
 
   static Update({ path, patch }) {
     return new Message(MESSAGE_TYPES.UPDATE, { p: path, u: patch });
+  }
+
+  static Delete({ path }) {
+    return new Message(MESSAGE_TYPES.DELETE, { p: path });
   }
 }
 

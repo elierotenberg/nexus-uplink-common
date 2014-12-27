@@ -8,4 +8,5 @@ require("6to5/polyfill");var Promise = (global || window).Promise = require("lod
   DISPATCH: "d",
   // Server -> Client
   HANDSHAKE_ACK: "ha",
-  UPDATE: "u" };
+  UPDATE: "u",
+  DELETE: "D" };

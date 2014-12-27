@@ -76,6 +76,11 @@ Message.prototype.interpret = function () {
       path.should.be.a.String;
       patch.should.be.a.String;
       this._interpretation = { path: path, patch: patch };
+    } else if (_type === MESSAGE_TYPES.DELETE) {
+      _payload.should.be.an.Object;
+      path = _payload.p;
+      path.should.be.a.String;
+      this._interpretation = { path: path };
     } else {
       throw new Error("Unknown message type: " + _type);
     }
@@ -131,6 +136,11 @@ Message.Update = function (_ref8) {
   var path = _ref8.path;
   var patch = _ref8.patch;
   return new Message(MESSAGE_TYPES.UPDATE, { p: path, u: patch });
+};
+
+Message.Delete = function (_ref9) {
+  var path = _ref9.path;
+  return new Message(MESSAGE_TYPES.DELETE, { p: path });
 };
 
 _.extend(Message.prototype, {

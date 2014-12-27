@@ -7,4 +7,5 @@ module.exports = {
   // Server -> Client
   HANDSHAKE_ACK:    'ha',
   UPDATE:           'u',
+  DELETE:           'D',
 };
