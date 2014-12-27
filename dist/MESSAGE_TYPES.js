@@ -1,12 +1,11 @@
 "use strict";
 
 require("6to5/polyfill");var Promise = (global || window).Promise = require("lodash-next").Promise;var __DEV__ = process.env.NODE_ENV !== "production";var __PROD__ = !__DEV__;var __BROWSER__ = typeof window === "object";var __NODE__ = !__BROWSER__;module.exports = {
+  // Client -> Server
   HANDSHAKE: "h",
-  HANDSHAKE_ACK: "ha",
-  SUBSCRIBE_TO: "s",
-  UNSUBSCRIBE_FROM: "us",
-  LISTEN_TO: "l",
-  UNLISTEN_FROM: "ul",
+  SUBSCRIBE: "s",
+  UNSUBSCRIBE: "us",
   DISPATCH: "d",
-  UPDATE: "u",
-  EMIT: "e" };
+  // Server -> Client
+  HANDSHAKE_ACK: "ha",
+  UPDATE: "u" };

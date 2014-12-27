@@ -1,11 +1,10 @@
 module.exports = {
+  // Client -> Server
   HANDSHAKE:        'h',
-  HANDSHAKE_ACK:    'ha',
-  SUBSCRIBE_TO:     's',
-  UNSUBSCRIBE_FROM: 'us',
-  LISTEN_TO:        'l',
-  UNLISTEN_FROM:    'ul',
+  SUBSCRIBE:        's',
+  UNSUBSCRIBE:      'us',
   DISPATCH:         'd',
+  // Server -> Client
+  HANDSHAKE_ACK:    'ha',
   UPDATE:           'u',
-  EMIT:             'e',
 };
