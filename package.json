@@ -1,6 +1,6 @@
 {
-  "name": "my-starterkit",
-  "version": "1.0.1",
+  "name": "nexus-uplink-common",
+  "version": "0.0.0",
   "description": "",
   "main": "dist/index.js",
   "scripts": {
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/elierotenberg/my-starterkit.git"
+    "url": "https://github.com/elierotenberg/nexus-uplink-common.git"
   },
   "author": "Elie Rotenberg <elie@rotenberg.io>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/elierotenberg/my-starterkit/issues"
+    "url": "https://github.com/elierotenberg/nexus-uplink-common/issues"
   },
-  "homepage": "https://github.com/elierotenberg/my-starterkit",
+  "homepage": "https://github.com/elierotenberg/nexus-uplink-common",
   "devDependencies": {
     "del": "^0.1.3",
     "gulp": "^3.8.10",
