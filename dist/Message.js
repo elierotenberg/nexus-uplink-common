@@ -82,7 +82,8 @@ Message.prototype.interpret = function () {
       this._interpretation = { path: path };
     } else if (_type === MESSAGE_TYPES.ERROR) {
       _payload.should.be.an.Object;
-      err = _payload.err, this._interpretation = { err: err };
+      err = _payload.err, err.should.be.an.Object;
+      this._interpretation = { err: err };
     } else {
       throw new Error("Unknown message type: " + _type);
     }
