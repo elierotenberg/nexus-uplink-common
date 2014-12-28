@@ -16,6 +16,10 @@ class Message {
     });
   }
 
+  get type() {
+    return this._type;
+  }
+
   toJSON() { // lazy-memoized JSON-stringification
     if(this._json === null) {
       this._json = JSON.stringify({
@@ -29,7 +33,7 @@ class Message {
   interpret() {
     if(this._interpretation === null) {
       const { _type, _payload } = this;
-      let action, clientSecret, params, patch, path, pid, protocol;
+      let action, clientSecret, err, params, patch, path, pid, protocol;
       if(_type === MESSAGE_TYPES.HANDSHAKE) {
         _payload.should.be.an.Object;
         clientSecret = _payload.s;
@@ -40,29 +44,23 @@ class Message {
       }
       else if(_type === MESSAGE_TYPES.SUBSCRIBE) {
         _payload.should.be.an.Object;
-        clientSecret = _payload.s;
         path = _payload.p;
-        clientSecret.should.be.a.String;
         path.should.be.a.String;
-        this._interpretation = { clientSecret, path };
+        this._interpretation = { path };
       }
       else if(_type === MESSAGE_TYPES.UNSUBSCRIBE) {
         _payload.should.be.an.Object;
-        clientSecret = _payload.s;
         path = _payload.p;
-        clientSecret.should.be.a.String;
         path.should.be.a.String;
-        this._interpretation = { clientSecret, path};
+        this._interpretation = { path};
       }
       else if(_type === MESSAGE_TYPES.DISPATCH) {
         _payload.should.be.an.Object;
-        clientSecret = _payload.s;
         action = _payload.a;
         params = _payload.p;
-        clientSecret.should.be.a.String;
         action.should.be.a.String;
         (params === null || _.isObject(params)).should.be.ok(`params should be 'null' or an Object.`);
-        this._interpretation = { clientSecret, action, params };
+        this._interpretation = { action, params };
       }
       else if(_type === MESSAGE_TYPES.HANDSHAKE_ACK) {
         _payload.should.be.an.Object;
@@ -86,6 +84,11 @@ class Message {
         path.should.be.a.String;
         this._interpretation = { path };
       }
+      else if(_type === MESSAGE_TYPES.ERROR) {
+        _payload.should.be.an.Object;
+        err = _payload.err,
+        this._interpretation = { err };
+      }
       else {
         throw new Error(`Unknown message type: ${_type}`);
       }
@@ -105,16 +108,16 @@ class Message {
     return new Message(MESSAGE_TYPES.HANDSHAKE, { s: clientSecret, v: PROTOCOL_VERSION });
   }
 
-  static Subscribe({ clientSecret, path }) {
-    return new Message(MESSAGE_TYPES.SUBSCRIBE, { s: clientSecret, p: path });
+  static Subscribe({ path }) {
+    return new Message(MESSAGE_TYPES.SUBSCRIBE, { p: path });
   }
 
-  static Unsubscribe({ clientSecret, path }) {
-    return new Message(MESSAGE_TYPES.UNSUBSCRIBE, { s: clientSecret, p: path });
+  static Unsubscribe({ path }) {
+    return new Message(MESSAGE_TYPES.UNSUBSCRIBE, { p: path });
   }
 
-  static Dispatch({ clientSecret, action, params }) {
-    return new Message(MESSAGE_TYPES.DISPATCH, { s: clientSecret, a: action, p: params });
+  static Dispatch({ action, params }) {
+    return new Message(MESSAGE_TYPES.DISPATCH, { a: action, p: params });
   }
 
   // Server -> Client factories
@@ -129,6 +132,10 @@ class Message {
 
   static Delete({ path }) {
     return new Message(MESSAGE_TYPES.DELETE, { p: path });
+  }
+
+  static Error({ err }) {
+    return new Message(MESSAGE_TYPES.ERROR, { e: err });
   }
 }
 

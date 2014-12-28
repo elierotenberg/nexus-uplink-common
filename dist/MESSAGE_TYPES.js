@@ -9,4 +9,5 @@ require("6to5/polyfill");var Promise = (global || window).Promise = require("lod
   // Server -> Client
   HANDSHAKE_ACK: "ha",
   UPDATE: "u",
-  DELETE: "D" };
+  DELETE: "D",
+  ERROR: "e" };

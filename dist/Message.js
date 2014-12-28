@@ -1,5 +1,10 @@
 "use strict";
 
+var _prototypeProperties = function (child, staticProps, instanceProps) {
+  if (staticProps) Object.defineProperties(child, staticProps);
+  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
+};
+
 require("6to5/polyfill");var Promise = (global || window).Promise = require("lodash-next").Promise;var __DEV__ = process.env.NODE_ENV !== "production";var __PROD__ = !__DEV__;var __BROWSER__ = typeof window === "object";var __NODE__ = !__BROWSER__;var _ = require("lodash-next");
 var PROTOCOL_VERSION = require("./PROTOCOL_VERSION");
 var MESSAGE_TYPES = require("./MESSAGE_TYPES");
@@ -31,7 +36,7 @@ Message.prototype.interpret = function () {
     var _ref = this;
     var _type = _ref._type;
     var _payload = _ref._payload;
-    var action = undefined, clientSecret = undefined, params = undefined, patch = undefined, path = undefined, pid = undefined, protocol = undefined;
+    var action = undefined, clientSecret = undefined, err = undefined, params = undefined, patch = undefined, path = undefined, pid = undefined, protocol = undefined;
     if (_type === MESSAGE_TYPES.HANDSHAKE) {
       _payload.should.be.an.Object;
       clientSecret = _payload.s;
@@ -41,27 +46,21 @@ Message.prototype.interpret = function () {
       this._interpretation = { clientSecret: clientSecret };
     } else if (_type === MESSAGE_TYPES.SUBSCRIBE) {
       _payload.should.be.an.Object;
-      clientSecret = _payload.s;
       path = _payload.p;
-      clientSecret.should.be.a.String;
       path.should.be.a.String;
-      this._interpretation = { clientSecret: clientSecret, path: path };
+      this._interpretation = { path: path };
     } else if (_type === MESSAGE_TYPES.UNSUBSCRIBE) {
       _payload.should.be.an.Object;
-      clientSecret = _payload.s;
       path = _payload.p;
-      clientSecret.should.be.a.String;
       path.should.be.a.String;
-      this._interpretation = { clientSecret: clientSecret, path: path };
+      this._interpretation = { path: path };
     } else if (_type === MESSAGE_TYPES.DISPATCH) {
       _payload.should.be.an.Object;
-      clientSecret = _payload.s;
       action = _payload.a;
       params = _payload.p;
-      clientSecret.should.be.a.String;
       action.should.be.a.String;
       (params === null || _.isObject(params)).should.be.ok("params should be 'null' or an Object.");
-      this._interpretation = { clientSecret: clientSecret, action: action, params: params };
+      this._interpretation = { action: action, params: params };
     } else if (_type === MESSAGE_TYPES.HANDSHAKE_ACK) {
       _payload.should.be.an.Object;
       pid = _payload.p;
@@ -81,6 +80,9 @@ Message.prototype.interpret = function () {
       path = _payload.p;
       path.should.be.a.String;
       this._interpretation = { path: path };
+    } else if (_type === MESSAGE_TYPES.ERROR) {
+      _payload.should.be.an.Object;
+      err = _payload.err, this._interpretation = { err: err };
     } else {
       throw new Error("Unknown message type: " + _type);
     }
@@ -107,22 +109,19 @@ Message.Handshake = function (_ref3) {
 };
 
 Message.Subscribe = function (_ref4) {
-  var clientSecret = _ref4.clientSecret;
   var path = _ref4.path;
-  return new Message(MESSAGE_TYPES.SUBSCRIBE, { s: clientSecret, p: path });
+  return new Message(MESSAGE_TYPES.SUBSCRIBE, { p: path });
 };
 
 Message.Unsubscribe = function (_ref5) {
-  var clientSecret = _ref5.clientSecret;
   var path = _ref5.path;
-  return new Message(MESSAGE_TYPES.UNSUBSCRIBE, { s: clientSecret, p: path });
+  return new Message(MESSAGE_TYPES.UNSUBSCRIBE, { p: path });
 };
 
 Message.Dispatch = function (_ref6) {
-  var clientSecret = _ref6.clientSecret;
   var action = _ref6.action;
   var params = _ref6.params;
-  return new Message(MESSAGE_TYPES.DISPATCH, { s: clientSecret, a: action, p: params });
+  return new Message(MESSAGE_TYPES.DISPATCH, { a: action, p: params });
 };
 
 // Server -> Client factories
@@ -142,6 +141,20 @@ Message.Delete = function (_ref9) {
   var path = _ref9.path;
   return new Message(MESSAGE_TYPES.DELETE, { p: path });
 };
+
+Message.Error = function (_ref10) {
+  var err = _ref10.err;
+  return new Message(MESSAGE_TYPES.ERROR, { e: err });
+};
+
+_prototypeProperties(Message, null, {
+  type: {
+    get: function () {
+      return this._type;
+    },
+    enumerable: true
+  }
+});
 
 _.extend(Message.prototype, {
   _type: null,

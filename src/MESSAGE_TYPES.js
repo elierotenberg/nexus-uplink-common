@@ -8,4 +8,5 @@ module.exports = {
   HANDSHAKE_ACK:    'ha',
   UPDATE:           'u',
   DELETE:           'D',
+  ERROR:            'e',
 };
